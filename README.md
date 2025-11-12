@@ -15,7 +15,7 @@ Pre-trained on a large-scale multi-domain time series dataset comprising 1.89 mi
 Experiments on 128 UCR datasets and 30 additional time series datasets demonstrate that UniShape achieves state-of-the-art classification performance, with interpretability and ablation analyses further validating its effectiveness. 
 
 <p align="center">
-  <img src="framework_pic/UniShape.png" width="600" alt="UniShape Framework">
+  <img src="framework_pic/UniShape.png" width="800" alt="UniShape Framework">
 </p>
 
 ---
@@ -32,7 +32,7 @@ The large-scale pretraining dataset is constructed from the **UCR archive**, **U
 - **TFC-8:** [Google Drive](https://drive.google.com/file/d/1J2AiL2KgDpZGprnWfH-cqza-Dih25p5z/view?usp=sharing)
 
 You can generate the merged **1.89M-sample pretraining dataset** using  
-[`data_pre/pretrain_dataset_pre.py`](data_pre/pretrain_dataset_pre.py), or download it directly:
+[`datapre/pretrain_dataset_pre.py`](datapre/pretrain_dataset_pre.py), or download it directly:
 
 - **Pretraining Dataset (1.89M samples):** [Google Drive](https://drive.google.com/drive/folders/1tZEMhhRsxv81_40hOpArvIW_CqcFHRyC?usp=sharing)
 
@@ -46,7 +46,7 @@ For evaluation, UniShape is tested on **128 UCR datasets** and **30 additional T
 - **UCR Archive (128 datasets):** [https://www.cs.ucr.edu/~eamonn/time_series_data_2018/](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/)
 - **30 Additional Datasets:** [Google Drive](https://drive.google.com/file/d/1vuh6mgNrNKjHr9MMRQP0J0_gGA4dE7E3/view?usp=sharing)
 
-Please refer to **page 13** of the [PDF](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/BriefingDocument2018.pdf) document for the password to access the zipped file of the UCR archive.
+Please refer to **page 13** of the [PDF](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/BriefingDocument2018.pdf) document for the password to access the zipped file of the UCR archive (128 datasets).
 
 
 ---
@@ -89,7 +89,7 @@ For full options, see [`unishape_zeroshot.py`](unishape_zeroshot.py).
 
 ---
 
-## 🙏 Acknowledgements
+## ❤️ Acknowledgements
 
 This codebase is inspired by the following repositories:
 

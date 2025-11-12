@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--random_seed', type=int, default=42, help='shuffle seed')
 
     parser.add_argument('--dataset', type=str, default='CBF', help='dataset(in ucr)') 
-    parser.add_argument('--dataroot', type=str, default='/home/lzheng/UCRArchive_2018', help='path of UCR folder')
+    parser.add_argument('--dataroot', type=str, default='/home/lzhen/UCRArchive_2018', help='path of UCR folder')
     parser.add_argument('--num_class', type=int, default=0, help='number of class')
     parser.add_argument('--input_size', type=int, default=1, help='input_size')
 
@@ -32,14 +32,14 @@ if __name__ == '__main__':
     parser.add_argument('--stride', type=int, default=16)
     parser.add_argument('--shape_ratio', type=float, default=0.1)
     parser.add_argument('--scale_len', type=int, default=5) ## 1， 2， 3， 4， 5
-    parser.add_argument('--ensemble_num_model', type=int, default=5) ## 1， 5
+    parser.add_argument('--ensemble_num_model', type=int, default=5) ## 1
     parser.add_argument('--pretrain_label_ratio', type=float, default=0.1, help='')
 
     parser.add_argument('--loss', type=str, default='cross_entropy', help='loss function')
     parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.05, help='weight decay')
     parser.add_argument('--batch_size', type=int, default=512, help='')
-    parser.add_argument('--epoch', type=int, default=300, help='training epoch') ### 300 
+    parser.add_argument('--epoch', type=int, default=300, help='training epoch') 
     parser.add_argument('--cuda', type=str, default='cuda:0')
 
     args = parser.parse_args()
