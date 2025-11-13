@@ -5,7 +5,7 @@ This is the training code for our paper "A Unified Shape-Aware Foundation Model 
 
 ---
 
-## 🧭 Overview
+## 🧭 Abstract
 
 Foundation models pre-trained on large-scale source datasets are reshaping the traditional training paradigm for time series classification.
 However, existing time series foundation models primarily focus on forecasting tasks and often overlook classification-specific challenges, such as modeling interpretable shapelets that capture class-discriminative temporal features. 
@@ -82,7 +82,7 @@ Refer to [`unishape_finetune.py`](unishape_finetune.py) for fine-tuning options 
 To perform zero-shot classification using a pre-trained UniShape model:
 
 ```bash
-python unishape_zeroshot.py --dataset CBF --your_args_here
+python unishape_zeroshot.py --dataset Tools --your_args_here
 ```
 
 For full options, see [`unishape_zeroshot.py`](unishape_zeroshot.py).

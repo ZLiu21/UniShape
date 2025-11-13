@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--window_emb_dim', type=int, default=128)
     parser.add_argument('--window_size', type=int, default=16)
     parser.add_argument('--stride', type=int, default=16)
-    parser.add_argument('--shape_ratio', type=float, default=0.1)
+    parser.add_argument('--shape_ratio', type=float, default=0.6)
     parser.add_argument('--scale_len', type=int, default=5) ## 1， 2， 3， 4， 5
     parser.add_argument('--ensemble_num_model', type=int, default=5) ## 1
     parser.add_argument('--pretrain_label_ratio', type=float, default=0.1, help='')
@@ -67,8 +67,6 @@ if __name__ == '__main__':
     train_dataset, val_dataset, test_dataset = fill_nan_value(train_x, train_x, test_x)
     val_target = train_target
 
-    print("args.batch_size = ", args.batch_size, ", train_x.shape = ", train_x.shape)
-
     args.load_checkpoint_path = './pretrained_model_ckpt/unishape_checkpoint_finetune.pth'
     
     model_list = []
@@ -76,7 +74,7 @@ if __name__ == '__main__':
     for _ in range(args.ensemble_num_model):
         model = UniShapeModel(config=args,
             series_size=args.model_series_size, in_channels=args.in_channels, window_emb_dim=args.window_emb_dim,
-            out_channels=args.out_channels, window_size=args.window_size, stride=args.stride, pre_training=False, shape_alpha=0.01, shape_ratio=0.6,
+            out_channels=args.out_channels, window_size=args.window_size, stride=args.stride, pre_training=False, shape_alpha=0.01, shape_ratio=args.shape_ratio,
             scale_len=args.scale_len
         )
         model = load_pretrained_model(args, model)
@@ -85,9 +83,7 @@ if __name__ == '__main__':
         model_list.append(model)
         optimizer_list.append(optimizer)
 
-    test_accuracies = []
     print('Start finetuning: ')
-
     train_set = UCRDataset(torch.from_numpy(train_dataset).type(torch.FloatTensor).to(device),
                            torch.from_numpy(train_target).type(torch.FloatTensor).to(device).to(torch.int64))
     val_set = UCRDataset(torch.from_numpy(val_dataset).type(torch.FloatTensor).to(device),
@@ -99,13 +95,6 @@ if __name__ == '__main__':
     val_loader = DataLoader(val_set, batch_size=args.batch_size, num_workers=0)
     test_loader = DataLoader(test_set, batch_size=args.batch_size, num_workers=0)
 
-    train_loss = []
-    train_accuracy = []
-    num_steps = args.epoch // args.batch_size
-
-    last_loss = float('inf')
-    stop_count = 0
-    increase_count = 0
     num_steps = train_set.__len__() // args.batch_size + 1
     min_val_loss = float('inf')
     test_accuracy = 0
@@ -135,19 +124,7 @@ if __name__ == '__main__':
             end_val_epoch = epoch
             test_loss, test_accuracy = evaluate_model(test_loader, model_list, num_classes)
 
-        if abs(last_loss - val_loss) <= 1e-4:
-            stop_count += 1
-        else:
-            stop_count = 0
-
-        if val_loss > last_loss:
-            increase_count += 1
-        else:
-            increase_count = 0
-
-        last_loss = val_loss
-
-        if epoch % 50 == 0: ## 50 
+        if epoch % 50 == 0: 
             print("epoch : {}, train loss: {} , test_accuracy : {}".format(epoch, epoch_train_loss,test_accuracy))
 
     print("Training end: test_accuracy = ", test_accuracy)

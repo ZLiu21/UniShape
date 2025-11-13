@@ -6,9 +6,7 @@ import torch.distributed as dist
 from utils.util import concat_all_gather, is_dist_avail_and_initialized
 
 
-def generate_pseudo_labels_by_similarity(
-    features, labels, batch_mask, class_centers,
-    p_cutoff=0.95, top_ratio=0.7, device='cuda'):
+def generate_pseudo_labels_by_similarity(features, labels, batch_mask, class_centers, top_ratio=0.7):
     with torch.no_grad():
         # Normalize features and class centers
         normed_feat = F.normalize(features, p=2, dim=1)  # (B, D)
@@ -18,8 +16,7 @@ def generate_pseudo_labels_by_similarity(
         cos_sims = torch.matmul(normed_feat, normed_centers.T)  # (B, C)
         max_sims, pseudo_labels = cos_sims.max(dim=1)  # (B,)
         
-        
-         # Mask for unlabeled data
+        # Mask for unlabeled data
         unlabeled_mask = ~batch_mask
 
         # Select confident pseudo-labels based on top_ratio
@@ -28,9 +25,6 @@ def generate_pseudo_labels_by_similarity(
             num_top = max(1, int(top_ratio * unlabeled_scores.size(0)))
             threshold = torch.topk(unlabeled_scores, num_top, sorted=True).values[-1]
             confident_mask = (max_sims >= threshold) & unlabeled_mask
-
-        # Select high-confidence pseudo-labels
-        # confident_mask = (max_sims >= p_cutoff) & (~batch_mask)
 
         # Initialize final targets with pseudo-labels
         final_targets = pseudo_labels.clone()
@@ -129,8 +123,7 @@ class MoCoV3ModelPseudo(nn.Module):
                     features=features,
                     labels=labels,
                     batch_mask=batch_mask,
-                    class_centers=self.class_centers,
-                    device=features.device
+                    class_centers=self.class_centers
                 )
 
                 proto_logits = torch.matmul(features, self.class_centers.T)  # (2B, C)

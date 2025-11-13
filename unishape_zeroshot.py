@@ -15,10 +15,8 @@ from models.unishapemodel_zeroshot import UniShapeModel
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 
-import argparse
 
-
-def zero_feature_extraction(args, val_loader, models, num_classes):
+def zero_feature_extraction(val_loader, models):
     val_pred_embeds = []
     real_labels = []
 
@@ -37,7 +35,6 @@ uni_30new_ts_sets = {"Tools", "SharePriceIncrease", "ShakeGestureWiimoteZ_eq", "
                   "GesturePebbleZ2_eq", "GesturePebbleZ1_eq", "GestureMidAirD3_eq", "GestureMidAirD2_eq", "GestureMidAirD1_eq", "FloodModeling3_disc", "FloodModeling2_disc", "FloodModeling1_disc",
                   "ElectricDeviceDetection", "DodgerLoopWeekend_nmv", "DodgerLoopGame_nmv", "DodgerLoopDay_nmv", "Covid3Month_disc", "Colposcopy", "AsphaltRegularityUni_eq", "AsphaltPavementTypeUni_eq",
                   "AsphaltObstaclesUni_eq", "AllGestureWiimoteZ_eq", "AllGestureWiimoteY_eq", "AllGestureWiimoteX_eq", "AconityMINIPrinterSmall_eq", "AconityMINIPrinterLarge_eq"}
-
 
 if __name__ == '__main__': 
     parser = argparse.ArgumentParser()
@@ -116,8 +113,8 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_set, batch_size=args.batch_size, num_workers=0, drop_last=False)
     test_loader = DataLoader(test_set, batch_size=args.batch_size, num_workers=0)
  
-    train_embeds, train_labels = zero_feature_extraction(args, train_loader, model_list, num_classes)
-    test_embeds, test_labels = zero_feature_extraction(args, test_loader, model_list, num_classes)
+    train_embeds, train_labels = zero_feature_extraction(train_loader, model_list)
+    test_embeds, test_labels = zero_feature_extraction(test_loader, model_list)
     
     predictor = RandomForestClassifier(n_estimators=200, n_jobs=-1, random_state=0)
     predictor.fit(train_embeds, train_labels)

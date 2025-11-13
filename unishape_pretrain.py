@@ -71,7 +71,7 @@ def train_epoch(model_d, epoch, dataloader_dict, optimizer, scheduler, label_mas
         batch_mask = label_mask[global_idx]
         
         # train
-        B, loss, acc1, acc5, model_d, fea_embds, label_embds = train_batch(model_d, epoch, idx, batch_data, batch_mask)
+        B, loss, acc1, acc5, model_d, fea_embds, _ = train_batch(model_d, epoch, idx, batch_data, batch_mask)
         Acc1s.update(acc1, B)
         Acc5s.update(acc5, B)
         
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_dir', type=str, default='/home/lzhen/ucr_uea_tfc_uni_dataset', help='path of UCR folder')
   
     parser.add_argument('--archives', type=str, default='ucr') 
-    parser.add_argument('--train_inters', type=int, default=923) # 1845 (bz=1024)
+    parser.add_argument('--train_inters', type=int, default=923) # 1845 (batch_size=1024)
     parser.add_argument('--in_channels', type=int, default=128)
     parser.add_argument('--out_channels', type=int, default=10)
     parser.add_argument('--model_series_size', type=int, default=512)
@@ -159,8 +159,7 @@ if __name__ == '__main__':
     args.dataset = 'all-merged'
     dataloader_dict = get_dataloader(config=args)
     
-    model = UniShapeModel(config=args, series_size=args.model_series_size, in_channels=args.in_channels, window_emb_dim=argswindow_emb_dim,
-            out_channels=args.out_channels, window_size=args.patch_size, stride=args.patch_stride, pre_training=True, shape_ratio=args.shape_ratio, scale_len=args.scale_len)
+    model = UniShapeModel(config=args, series_size=args.model_series_size, in_channels=args.in_channels, window_emb_dim=args.window_emb_dim, out_channels=args.out_channels, window_size=args.patch_size, stride=args.patch_stride, pre_training=True, shape_ratio=args.shape_ratio, scale_len=args.scale_len)
     model = MoCoV3ModelPseudo(backbone=model, tau=args.tau, lamb=args.proto_lamb, num_classes=args.num_classes, shape_ratio=args.shape_ratio)
     model = torch.nn.DataParallel(model).cuda()  
     
@@ -180,7 +179,6 @@ if __name__ == '__main__':
     label_mask = build_label_mask(targets_np, ratio=args.label_ratio, seed=args.random_seed)
 
     for epoch in range(1, args.epoch+1):
-        
         model = train_epoch(model_d=model, epoch=epoch, dataloader_dict=dataloader_dict, 
                     optimizer=optimizer, scheduler=scheduler, label_mask=label_mask)
         
